@@ -7,6 +7,7 @@
  */
 
 #include "DHT22Node.hpp"
+#include "Debug.hpp"
 
 #define DHTTYPE DHT22
 
@@ -42,16 +43,16 @@ void DHT22Node::loop()
       if (isnan(temperature) || isnan(humidity))
       {
         Homie.getLogger() << cIndent << "Error reading from Sensor" << endl;
-        setProperty(cStatus).send("error");
+        Debug::debugSend(setProperty(cStatus).send("error"));
       }
       else
       {
         Homie.getLogger() << cIndent << "Temperature: " << temperature << " °C" << endl;
         Homie.getLogger() << cIndent << "Humidity: " << humidity << " %" << endl;
 
-        setProperty(cStatus).send("ok");
-        setProperty(cTemperature).send(String(temperature));
-        setProperty(cHumidity).send(String(humidity));
+        Debug::debugSend(setProperty(cStatus).send("ok"));
+        Debug::debugSend(setProperty(cTemperature).send(String(temperature)));
+        Debug::debugSend(setProperty(cHumidity).send(String(humidity)));
       }
       _lastMeasurement = millis();
     }
@@ -60,8 +61,8 @@ void DHT22Node::loop()
 
 void DHT22Node::onReadyToOperate()
 {
-  setProperty(cTemperatureUnit).send("°C");
-  setProperty(cHumidityUnit).send("%");
+  Debug::debugSend(setProperty(cTemperatureUnit).send("°C"));
+  Debug::debugSend(setProperty(cHumidityUnit).send("%"));
 };
 
 void DHT22Node::setup()

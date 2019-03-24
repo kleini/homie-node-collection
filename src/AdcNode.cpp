@@ -8,6 +8,7 @@
 
 #include "AdcNode.hpp"
 #include <Homie.hpp>
+#include "Debug.hpp"
 
 ADC_MODE(ADC_VCC);
 
@@ -71,8 +72,8 @@ void AdcNode::send()
   }
   else
   {
-    setProperty(cVoltage).send(String(_voltage));
-    setProperty(cBatteryLevel).send(String(_batteryLevel));
+    Debug::debugSend(setProperty(cVoltage).send(String(_voltage)));
+    Debug::debugSend(setProperty(cBatteryLevel).send(String(_batteryLevel)));
     Homie.getLogger() << cIndent << "Voltage: " << _voltage << "V" << endl;
     Homie.getLogger() << cIndent << "Battery level: " << _batteryLevel << "%" << endl;
   }
@@ -113,8 +114,8 @@ void AdcNode::beforeHomieSetup()
 void AdcNode::onReadyToOperate()
 {
   // Will be called after MQTT_CONNECT
-  setProperty(cVoltageUnit).send("V");
-  setProperty(cBatteryLevelUnit).send("%");
+  Debug::debugSend(setProperty(cVoltageUnit).send("V"));
+  Debug::debugSend(setProperty(cBatteryLevelUnit).send("%"));
 };
 
 void AdcNode::setup()

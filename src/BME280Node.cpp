@@ -9,6 +9,7 @@
 
 #include "BME280Node.hpp"
 #include <Homie.h>
+#include "Debug.hpp"
 
 HomieSetting<double> temperatureOffsetSetting("temperatureOffset", "The temperature offset in degrees [-10.0 - 10.0] Default = 0");
 
@@ -55,17 +56,18 @@ void BME280Node::loop()
       Homie.getLogger() << cIndent << "Humidity: " << humidity << " %" << endl;
       Homie.getLogger() << cIndent << "Pressure: " << pressure << " hPa" << endl;
 
-      setProperty(cStatus).send("ok");
-      setProperty(cTemperature).send(String(temperature));
-      setProperty(cHumidity).send(String(humidity));
-      setProperty(cPressure).send(String(pressure));
+      Debug::debugSend(setProperty(cStatus).send("ok"));
+      Debug::debugSend(setProperty(cTemperature).send(String(temperature)));
+      Debug::debugSend(setProperty(cHumidity).send(String(humidity)));
+      Debug::debugSend(setProperty(cPressure).send(String(pressure)));
     }
     else
     {
-      setProperty(cStatus).send("error");
+      Debug::debugSend(setProperty(cStatus).send("error"));
     }
     _lastMeasurement = millis();
   }
+  Homie.getLogger() << "BME280 loop called" << endl;
 }
 
 void BME280Node::beforeHomieSetup()
@@ -77,9 +79,9 @@ void BME280Node::beforeHomieSetup()
 
 void BME280Node::onReadyToOperate()
 {
-  setProperty(cTemperatureUnit).send("°C");
-  setProperty(cHumidityUnit).send("%");
-  setProperty(cPressureUnit).send("hPa");
+  Debug::debugSend(setProperty(cTemperatureUnit).send("°C"));
+  Debug::debugSend(setProperty(cHumidityUnit).send("%"));
+  Debug::debugSend(setProperty(cPressureUnit).send("hPa"));
 };
 
 void BME280Node::setup()

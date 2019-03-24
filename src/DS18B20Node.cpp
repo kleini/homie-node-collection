@@ -7,6 +7,7 @@
  */
 
 #include "DS18B20Node.hpp"
+#include "Debug.hpp"
 
 DS18B20Node::DS18B20Node(const char *name, const int sensorPin, const int measurementInterval)
     : HomieNode(name, "DS18N20Sensor"), _sensorPin(sensorPin), _measurementInterval(measurementInterval), _lastMeasurement(0) {
@@ -28,11 +29,11 @@ void DS18B20Node::loop() {
       printCaption();
       if (DEVICE_DISCONNECTED_C == temperature) {
         Homie.getLogger() << cIndent << "Error reading from Sensor" << endl;
-        setProperty(cStatus).send("error");
+        Debug::debugSend(setProperty(cStatus).send("error"));
       } else {
         Homie.getLogger() << cIndent << "Temperature: " << temperature << " °C" << endl;
-        setProperty(cStatus).send("ok");
-        setProperty(cTemperature).send(String(temperature));
+        Debug::debugSend(setProperty(cStatus).send("ok"));
+        Debug::debugSend(setProperty(cTemperature).send(String(temperature)));
       }
       _lastMeasurement = millis();
     }
@@ -40,7 +41,7 @@ void DS18B20Node::loop() {
 }
 
 void DS18B20Node::onReadyToOperate() {
-  setProperty(cTemperatureUnit).send("°C");
+  Debug::debugSend(setProperty(cTemperatureUnit).send("°C"));
 };
 
 void DS18B20Node::setup() {
