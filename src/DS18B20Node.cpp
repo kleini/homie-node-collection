@@ -9,7 +9,7 @@
 #include "DS18B20Node.hpp"
 
 DS18B20Node::DS18B20Node(const char *name, const int sensorPin, const int measurementInterval)
-    : HomieNode(name, "DS18N20Sensor"), _sensorPin(sensorPin), _measurementInterval(measurementInterval), _lastMeasurement(0) {
+    : HomieNode(name, "DS18N20Sensor", "sensor"), _sensorPin(sensorPin), _measurementInterval(measurementInterval), _lastMeasurement(0) {
   if (_sensorPin > DEFAULTPIN) {
     oneWire = new OneWire(_sensorPin);
     dallasTemp = new DallasTemperature(oneWire);

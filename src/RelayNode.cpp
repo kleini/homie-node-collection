@@ -9,13 +9,13 @@
 #include "RelayNode.hpp"
 
 RelayNode::RelayNode(const char *name, const int relayPin, const int ledPin)
-    : HomieNode(name, "RelayNode")
+    : HomieNode(name, "RelayNode", "relay")
 {
   _relayPin = relayPin;
   _ledPin = ledPin;
 }
 
-bool RelayNode::handleInput(const String &property, const HomieRange &range, const String &value)
+bool RelayNode::handleInput(const HomieRange &range, const String &property, const String &value)
 {
   Homie.getLogger() << "Message: " << value << endl;
   if (value != "true" && value != "false")
