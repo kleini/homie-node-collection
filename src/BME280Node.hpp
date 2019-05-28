@@ -30,6 +30,7 @@ private:
   unsigned int _i2cAddress;
   unsigned long _measurementInterval;
   unsigned long _lastMeasurement;
+  unsigned long _lastTransmit;
 
   Adafruit_BME280::sensor_sampling _tempSampling;
   Adafruit_BME280::sensor_sampling _pressSampling;

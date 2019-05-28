@@ -21,6 +21,7 @@ BME280Node::BME280Node(const char *name,
                        const Adafruit_BME280::sensor_filter filter) : HomieNode(name, "BME280Sensor", "sensor"),
                                                                       _i2cAddress(i2cAddress),
                                                                       _lastMeasurement(0),
+                                                                      _lastTransmit(0),
                                                                       _tempSampling(tempSampling),
                                                                       _pressSampling(pressSampling),
                                                                       _humSampling(humSampling),
@@ -34,13 +35,9 @@ void BME280Node::printCaption()
   Homie.getLogger() << cCaption << endl;
 }
 
-void BME280Node::loop()
-{
-  if (millis() - _lastMeasurement >= _measurementInterval * 1000UL ||
-      _lastMeasurement == 0)
-  {
-    if (_sensorFound)
-    {
+void BME280Node::loop() {
+  if (millis() - _lastMeasurement >= _measurementInterval * 1000UL || _lastMeasurement == 0) {
+    if (_sensorFound) {
       bme.takeForcedMeasurement(); // has no effect in normal mode
 
       temperature = bme.readTemperature();
@@ -54,17 +51,21 @@ void BME280Node::loop()
       Homie.getLogger() << cIndent << "Temperature (after offset): " << temperature << " °C" << endl;
       Homie.getLogger() << cIndent << "Humidity: " << humidity << " %" << endl;
       Homie.getLogger() << cIndent << "Pressure: " << pressure << " hPa" << endl;
-
-      setProperty(cStatus).send("ok");
-      setProperty(cTemperature).send(String(temperature));
-      setProperty(cHumidity).send(String(humidity));
-      setProperty(cPressure).send(String(pressure));
-    }
-    else
-    {
-      setProperty(cStatus).send("error");
     }
     _lastMeasurement = millis();
+  }
+  if (Homie.isConnected()) {
+    if (millis() - _lastTransmit >= _measurementInterval * 1000UL || _lastTransmit == 0) {
+      if (_sensorFound) {
+        setProperty(cTemperature).send(String(temperature));
+        setProperty(cHumidity).send(String(humidity));
+        setProperty(cPressure).send(String(pressure));
+        setProperty(cStatus).send("ok");
+      } else {
+        setProperty(cStatus).send("error");
+      }
+      _lastTransmit = millis();
+    }
   }
 }
 
